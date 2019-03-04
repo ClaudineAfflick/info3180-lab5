@@ -22,10 +22,11 @@ def home():
     return render_template('home.html')
 
 
-@app.route('/')
-def home():
-    """Render website's home page."""
-    return render_template('home.html')
+@app.route('/secure-page')
+@login_required
+def secure_page():
+    """Render website's secure page."""
+    return render_template('secure_page.html')
 
 
 @app.route('/about/')
@@ -54,7 +55,7 @@ def login():
             user = UserProfile.query.filter_by(username=username, password=password).first()
             
             if user is not None and check_password_hash(user.password, password):
-            remember_me = False
+                remember_me = False
             if 'remember_me' in request.form:
                 remember_me = True
                 
@@ -62,7 +63,8 @@ def login():
             login_user(user,remember=remember_me)
     
             # remember to flash a message to the user
-            return redirect(url_for("home"))  # they should be redirected to a secure-page route instead
+            flash("WELCOME")
+            return redirect(url_for("secure-page"))  # they should be redirected to a secure-page route instead
     return render_template("login.html", form=form)
 
 
